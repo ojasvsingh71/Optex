@@ -9,15 +9,15 @@ dotenv.config();
 const openai = new OpenAI({ apiKey: process.env.AI_KEY })
 
 const chat = async (req, res) => {
-    const { prompt } = req.body;
+    const { messages } = req.body;
 
-    await user.create({ prompt });
+    await user.create({ prompt: messages.map(m => m.content).join("\n") });
     try {
         const completion = await openai.chat.completions.create({
             model: "gpt-4o-mini",
             messages: [
                 { role: "system", content: assistantPrompt },
-                { role: "user", content: prompt }
+                ...messages
             ]
         })
 
